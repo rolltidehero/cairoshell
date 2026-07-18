@@ -366,6 +366,16 @@ namespace CairoDesktop.MenuBar
             }
         }
 
+        private void ProgramsMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            programsMenuControl.FocusSearchBox();
+        }
+
+        private void ProgramsMenu_SubmenuClosed(object sender, RoutedEventArgs e)
+        {
+            programsMenuControl.ResetSearch();
+        }
+
         private void ProgramsMenu_DragOver(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))

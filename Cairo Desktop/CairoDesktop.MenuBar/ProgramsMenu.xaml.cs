@@ -1,9 +1,16 @@
 ﻿using CairoDesktop.AppGrabber;
 using CairoDesktop.Common;
 using CairoDesktop.Common.Localization;
+using ManagedShell.Common.Logging;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace CairoDesktop.MenuBar
 {
@@ -13,8 +20,14 @@ namespace CairoDesktop.MenuBar
     public partial class ProgramsMenu : UserControl
     {
         public MenuBar MenuBar;
-        
+
         bool hasLoaded;
+
+        private readonly ObservableCollection<ApplicationInfo> _searchResults = new ObservableCollection<ApplicationInfo>();
+        private List<ApplicationInfo> _searchAppsCache;
+        private bool _isFetchingSearchCache;
+
+        private const int MAX_SEARCH_RESULTS = 50;
 
         public ProgramsMenu()
         {
@@ -27,6 +40,8 @@ namespace CairoDesktop.MenuBar
             {
                 // Set Programs Menu to use appGrabber's ProgramList as its source
                 categorizedProgramsList.ItemsSource = MenuBar._appGrabber.CategoryList;
+                searchResultsList.ItemsSource = _searchResults;
+                btnClearProgramsSearch.Visibility = Visibility.Hidden;
 
                 // set tab based on user preference
                 int i = categorizedProgramsList.Items.IndexOf(MenuBar._appGrabber.CategoryList.GetCategory(Settings.Instance.DefaultProgramsCategory));
@@ -59,6 +74,223 @@ namespace CairoDesktop.MenuBar
 
             if (!MenuBar._commandService.InvokeCommand("OpenProgramsControlPanel"))
                 CairoMessage.Show(DisplayString.sError_CantOpenAppWiz, DisplayString.sError_OhNo, MessageBoxButton.OK, CairoMessageImage.Error);
+        }
+        #endregion
+
+        #region Search
+        /// <summary>
+        /// Focuses the search box and kicks off a refresh of the all-apps cache used to search.
+        /// Called by MenuBar when the Programs menu submenu opens.
+        /// </summary>
+        public void FocusSearchBox()
+        {
+            RefreshSearchCache();
+            FocusSearchTextBox();
+        }
+
+        /// <summary>
+        /// Clears the search box, returning the menu to the categorized view.
+        /// Called by MenuBar when the Programs menu submenu closes.
+        /// </summary>
+        public void ResetSearch()
+        {
+            txtProgramsSearch.Clear();
+        }
+
+        private void FocusSearchTextBox()
+        {
+            txtProgramsSearch.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                txtProgramsSearch.Focusable = true;
+                txtProgramsSearch.Focus();
+                Keyboard.Focus(txtProgramsSearch);
+            }), DispatcherPriority.Render);
+        }
+
+        /// <summary>
+        /// Refreshes the cache of all apps known to App Grabber (Start Menu + UWP), used as the
+        /// search source. This performs a filesystem/registry scan, so it is run off the UI thread
+        /// and only triggered once per menu open rather than per keystroke.
+        /// </summary>
+        private void RefreshSearchCache()
+        {
+            if (_isFetchingSearchCache || MenuBar?._appGrabber is null)
+            {
+                return;
+            }
+
+            _isFetchingSearchCache = true;
+
+            Task.Run(MenuBar._appGrabber.GetApps).ContinueWith(t =>
+            {
+                _isFetchingSearchCache = false;
+
+                if (t.IsFaulted)
+                {
+                    ShellLogger.Warning($"ProgramsMenu: Unable to refresh app search cache: {t.Exception?.GetBaseException().Message}");
+                    return;
+                }
+
+                _searchAppsCache = t.Result;
+
+                if (!string.IsNullOrEmpty(txtProgramsSearch.Text))
+                {
+                    RunSearch(txtProgramsSearch.Text);
+                }
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void RunSearch(string query)
+        {
+            _searchResults.Clear();
+
+            if (_searchAppsCache is null || MenuBar?._appGrabber is null)
+            {
+                return;
+            }
+
+            IEnumerable<ApplicationInfo> pinned = MenuBar._appGrabber.CategoryList.FlatList;
+
+            // Pinned apps are listed first so Distinct() keeps the pinned instance (with its
+            // Category set) over the transient instance discovered by the cache scan.
+            List<ApplicationInfo> matches = pinned.Concat(_searchAppsCache)
+                .Distinct()
+                .Where(app => !string.IsNullOrEmpty(app.Name) && app.Name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                .OrderBy(app => app.Name, StringComparer.OrdinalIgnoreCase)
+                .Take(MAX_SEARCH_RESULTS)
+                .ToList();
+
+            foreach (ApplicationInfo app in matches)
+            {
+                _searchResults.Add(app);
+            }
+        }
+
+        private void txtProgramsSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string query = txtProgramsSearch.Text;
+            bool isEmpty = string.IsNullOrEmpty(query);
+
+            txtProgramsSearchPlaceholder.Visibility = isEmpty ? Visibility.Visible : Visibility.Collapsed;
+
+            // SearchTextBoxClearButton's built-in empty-state trigger targets an element named
+            // "searchStr" (from the original Search feature), which doesn't exist in this control,
+            // so it never fires here; set the button's visibility directly instead.
+            btnClearProgramsSearch.Visibility = isEmpty ? Visibility.Hidden : Visibility.Visible;
+
+            if (isEmpty)
+            {
+                searchResultsList.Visibility = Visibility.Collapsed;
+                categorizedProgramsList.Visibility = Visibility.Visible;
+                _searchResults.Clear();
+                return;
+            }
+
+            categorizedProgramsList.Visibility = Visibility.Collapsed;
+            searchResultsList.Visibility = Visibility.Visible;
+
+            RunSearch(query);
+        }
+
+        private void txtProgramsSearch_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key is Key.Return)
+            {
+                if (_searchResults.Count > 0)
+                {
+                    MenuBar._appGrabber.LaunchProgram(_searchResults[0]);
+                    MenuBar.ProgramsMenu.IsSubmenuOpen = false;
+                }
+
+                e.Handled = true;
+            }
+            else if (e.Key is Key.Escape && !string.IsNullOrEmpty(txtProgramsSearch.Text))
+            {
+                // clear the search on the first Escape; let a second Escape close the menu as usual
+                txtProgramsSearch.Clear();
+                e.Handled = true;
+            }
+        }
+
+        private void btnClearProgramsSearch_Click(object sender, RoutedEventArgs e)
+        {
+            txtProgramsSearch.Clear();
+
+            // Buttons capture the mouse; need to release so that mouse events go to the intended recipient after closing
+            Mouse.Capture(null);
+
+            FocusSearchTextBox();
+        }
+
+        private void ctxSearchResultItem_Opened(object sender, RoutedEventArgs e)
+        {
+            ContextMenu menu = sender as ContextMenu;
+            ApplicationInfo app = menu?.DataContext as ApplicationInfo;
+
+            if (app is null)
+            {
+                return;
+            }
+
+            bool isPinned = app.Category != null;
+
+            foreach (Control item in menu.Items)
+            {
+                switch (item.Name)
+                {
+                    case "miSearchResultAdmin":
+                        item.Visibility = app.AllowRunAsAdmin ? Visibility.Visible : Visibility.Collapsed;
+                        break;
+                    case "miSearchResultAdd":
+                    case "sepSearchResultAdd":
+                        item.Visibility = isPinned ? Visibility.Collapsed : Visibility.Visible;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void searchResults_Open(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            ApplicationInfo app = item.DataContext as ApplicationInfo;
+
+            MenuBar._appGrabber.LaunchProgram(app);
+        }
+
+        private void searchResults_OpenAsAdmin(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            ApplicationInfo app = item.DataContext as ApplicationInfo;
+
+            MenuBar._appGrabber.LaunchProgramAdmin(app);
+        }
+
+        private void searchResults_Properties(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            ApplicationInfo app = item.DataContext as ApplicationInfo;
+
+            MenuBar._appGrabber.ShowAppProperties(app);
+        }
+
+        private void searchResults_AddToMenu(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            ApplicationInfo app = item.DataContext as ApplicationInfo;
+
+            if (app.IsStoreApp)
+            {
+                MenuBar._appGrabber.AddStoreApp(app.Target, AppCategoryType.Standard);
+            }
+            else
+            {
+                MenuBar._appGrabber.AddByPath(app.Path, AppCategoryType.Standard);
+            }
+
+            // re-run the filter so this item now reflects its pinned state
+            RunSearch(txtProgramsSearch.Text);
         }
         #endregion
 

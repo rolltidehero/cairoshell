@@ -306,6 +306,12 @@ namespace CairoDesktop.Common.Localization
 
         public static string sProgramsMenu_UninstallAProgram => getString();
 
+        public static string sProgramsMenu_SearchPlaceholder => getString();
+
+        public static string sProgramsMenu_SearchNoResults => getString();
+
+        public static string sProgramsMenu_AddToMenu => getString();
+
         public static string sProgramsMenu_RemoveFromMenu => getString();
 
         public static string sProgramsMenu_RemoveTitle => getString();

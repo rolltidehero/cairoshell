@@ -133,21 +133,104 @@
                 <MenuItem Header="{Binding Path=(l10n:DisplayString.sInterface_Delete)}"
                           Click="categoryMenu_Delete" />
             </ContextMenu>
+
+            <Style x:Key="SearchResultsListStyle"
+                TargetType="ItemsControl">
+                <Setter Property="ItemTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <MenuItem Click="searchResults_Open">
+                                <MenuItem.Icon>
+                                    <Image Source="{Binding Path=Icon, Mode=OneWay, FallbackValue={StaticResource NullIcon}, TargetNullValue={StaticResource NullIcon}}"
+                                        Height="16"
+                                        Width="16" />
+                                </MenuItem.Icon>
+                                <MenuItem.ContextMenu>
+                                    <ContextMenu Name="ctxSearchResultItem" Opened="ctxSearchResultItem_Opened">
+                                        <MenuItem Header="{Binding Path=(l10n:DisplayString.sInterface_Open)}" Click="searchResults_Open" />
+                                        <MenuItem Header="{Binding Path=(l10n:DisplayString.sInterface_OpenAsAdministrator)}" Click="searchResults_OpenAsAdmin" Name="miSearchResultAdmin" />
+                                        <Separator Name="sepSearchResultAdd" />
+                                        <MenuItem Header="{Binding Path=(l10n:DisplayString.sProgramsMenu_AddToMenu)}" Click="searchResults_AddToMenu" Name="miSearchResultAdd" />
+                                        <Separator />
+                                        <MenuItem Header="{Binding Path=(l10n:DisplayString.sInterface_Properties)}" Click="searchResults_Properties" />
+                                    </ContextMenu>
+                                </MenuItem.ContextMenu>
+                                <MenuItem.Header>
+                                    <TextBlock Text="{Binding Path=Name}" TextTrimming="CharacterEllipsis" Width="191" />
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ItemsControl">
+                            <ScrollViewer CanContentScroll="True" HorizontalScrollBarVisibility="Disabled" MaxHeight="576" Width="240" VerticalScrollBarVisibility="Auto">
+                                <VirtualizingStackPanel IsItemsHost="True" />
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="HasItems" Value="False">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ItemsControl}">
+                                    <TextBlock Style="{StaticResource NoItemsTextBlock}" TextAlignment="Center" Padding="20,17,20,20" Width="240" Text="{Binding Path=(l10n:DisplayString.sProgramsMenu_SearchNoResults)}" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <TabControl Name="categorizedProgramsList">
-        <TabControl.ContentTemplate>
-            <DataTemplate>
-                <ItemsControl ItemsSource="{Binding}"
-                              Style="{StaticResource InnerProgramsListStyle}" />
-            </DataTemplate>
-        </TabControl.ContentTemplate>
-        <TabControl.ItemContainerStyle>
-            <Style TargetType="{x:Type TabItem}"
-                   BasedOn="{StaticResource ProgramsTabItem}">
-                <Setter Property="ContextMenu"
-                        Value="{StaticResource CategoryContextMenu}" />
-            </Style>
-        </TabControl.ItemContainerStyle>
-    </TabControl>
+    <DockPanel>
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource ResourceKey=SearchResultBackground1}"
+                Margin="6,6,6,3"
+                CornerRadius="10"
+                Padding="7,1,4,1">
+            <StackPanel Orientation="Horizontal">
+                <Grid>
+                    <TextBox Name="txtProgramsSearch"
+                             Style="{StaticResource SearchTextBox}"
+                             Width="205"
+                             TextChanged="txtProgramsSearch_TextChanged"
+                             PreviewKeyDown="txtProgramsSearch_PreviewKeyDown" />
+                    <TextBlock Name="txtProgramsSearchPlaceholder"
+                               Text="{Binding Path=(l10n:DisplayString.sProgramsMenu_SearchPlaceholder)}"
+                               Foreground="{DynamicResource ResourceKey=SearchResultText}"
+                               Opacity="0.5"
+                               Margin="4,0,0,0"
+                               VerticalAlignment="Center"
+                               IsHitTestVisible="False" />
+                </Grid>
+                <Button Style="{StaticResource SearchTextBoxClearButton}"
+                        Content="r"
+                        Name="btnClearProgramsSearch"
+                        Click="btnClearProgramsSearch_Click" />
+            </StackPanel>
+        </Border>
+        <Grid>
+            <TabControl Name="categorizedProgramsList">
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <ItemsControl ItemsSource="{Binding}"
+                                      Style="{StaticResource InnerProgramsListStyle}" />
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+                <TabControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type TabItem}"
+                           BasedOn="{StaticResource ProgramsTabItem}">
+                        <Setter Property="ContextMenu"
+                                Value="{StaticResource CategoryContextMenu}" />
+                    </Style>
+                </TabControl.ItemContainerStyle>
+            </TabControl>
+            <ItemsControl Name="searchResultsList"
+                          Style="{StaticResource SearchResultsListStyle}"
+                          Visibility="Collapsed" />
+        </Grid>
+    </DockPanel>
 </UserControl>

@@ -45,7 +45,9 @@
                           DragOver="ProgramsMenu_DragOver"
                           ItemContainerStyle="{StaticResource CairoMenuItemContainerStyle}"
                           TextBlock.FontWeight="SemiBold"
-                          StaysOpenOnClick="True">
+                          StaysOpenOnClick="True"
+                          SubmenuOpened="ProgramsMenu_SubmenuOpened"
+                          SubmenuClosed="ProgramsMenu_SubmenuClosed">
                     <MenuItem StaysOpenOnClick="True">
                         <MenuItem.Header>
                             <control:ProgramsMenu x:Name="programsMenuControl" />

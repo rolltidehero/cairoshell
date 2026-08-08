@@ -139,7 +139,7 @@
                 <Setter Property="ItemTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <MenuItem Click="searchResults_Open">
+                            <MenuItem Click="programsMenu_Open">
                                 <MenuItem.Icon>
                                     <Image Source="{Binding Path=Icon, Mode=OneWay, FallbackValue={StaticResource NullIcon}, TargetNullValue={StaticResource NullIcon}}"
                                         Height="16"
@@ -147,12 +147,12 @@
                                 </MenuItem.Icon>
                                 <MenuItem.ContextMenu>
                                     <ContextMenu Name="ctxSearchResultItem" Opened="ctxSearchResultItem_Opened">
-                                        <MenuItem Header="{Binding Path=(l10n:DisplayString.sInterface_Open)}" Click="searchResults_Open" />
-                                        <MenuItem Header="{Binding Path=(l10n:DisplayString.sInterface_OpenAsAdministrator)}" Click="searchResults_OpenAsAdmin" Name="miSearchResultAdmin" />
+                                        <MenuItem Header="{Binding Path=(l10n:DisplayString.sInterface_Open)}" Click="programsMenu_Open" />
+                                        <MenuItem Header="{Binding Path=(l10n:DisplayString.sInterface_OpenAsAdministrator)}" Click="programsMenu_OpenAsAdmin" Name="miSearchResultAdmin" />
                                         <Separator Name="sepSearchResultAdd" />
                                         <MenuItem Header="{Binding Path=(l10n:DisplayString.sProgramsMenu_AddToMenu)}" Click="searchResults_AddToMenu" Name="miSearchResultAdd" />
                                         <Separator />
-                                        <MenuItem Header="{Binding Path=(l10n:DisplayString.sInterface_Properties)}" Click="searchResults_Properties" />
+                                        <MenuItem Header="{Binding Path=(l10n:DisplayString.sInterface_Properties)}" Click="programsMenu_Properties" />
                                     </ContextMenu>
                                 </MenuItem.ContextMenu>
                                 <MenuItem.Header>
@@ -187,10 +187,8 @@
     </UserControl.Resources>
     <DockPanel>
         <Border DockPanel.Dock="Top"
-                Background="{DynamicResource ResourceKey=SearchResultBackground1}"
-                Margin="6,6,6,3"
-                CornerRadius="10"
-                Padding="7,1,4,1">
+                Style="{StaticResource SearchBoxBorderStyle}"
+                Margin="6,6,6,3">
             <StackPanel Orientation="Horizontal">
                 <Grid>
                     <TextBox Name="txtProgramsSearch"

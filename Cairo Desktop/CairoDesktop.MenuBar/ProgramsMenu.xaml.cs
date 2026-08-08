@@ -151,12 +151,11 @@ namespace CairoDesktop.MenuBar
 
             IEnumerable<ApplicationInfo> pinned = MenuBar._appGrabber.CategoryList.FlatList;
 
-            // Pinned apps are listed first so Distinct() keeps the pinned instance (with its
-            // Category set) over the transient instance discovered by the cache scan.
             List<ApplicationInfo> matches = pinned.Concat(_searchAppsCache)
                 .Distinct()
                 .Where(app => !string.IsNullOrEmpty(app.Name) && app.Name.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
-                .OrderBy(app => app.Name, StringComparer.OrdinalIgnoreCase)
+                .OrderByDescending(app => app.Category != null)
+                .ThenBy(app => app.Name, StringComparer.OrdinalIgnoreCase)
                 .Take(MAX_SEARCH_RESULTS)
                 .ToList();
 
@@ -216,9 +215,6 @@ namespace CairoDesktop.MenuBar
         {
             txtProgramsSearch.Clear();
 
-            // Buttons capture the mouse; need to release so that mouse events go to the intended recipient after closing
-            Mouse.Capture(null);
-
             FocusSearchTextBox();
         }
 
@@ -249,30 +245,6 @@ namespace CairoDesktop.MenuBar
                         break;
                 }
             }
-        }
-
-        private void searchResults_Open(object sender, RoutedEventArgs e)
-        {
-            MenuItem item = (MenuItem)sender;
-            ApplicationInfo app = item.DataContext as ApplicationInfo;
-
-            MenuBar._appGrabber.LaunchProgram(app);
-        }
-
-        private void searchResults_OpenAsAdmin(object sender, RoutedEventArgs e)
-        {
-            MenuItem item = (MenuItem)sender;
-            ApplicationInfo app = item.DataContext as ApplicationInfo;
-
-            MenuBar._appGrabber.LaunchProgramAdmin(app);
-        }
-
-        private void searchResults_Properties(object sender, RoutedEventArgs e)
-        {
-            MenuItem item = (MenuItem)sender;
-            ApplicationInfo app = item.DataContext as ApplicationInfo;
-
-            MenuBar._appGrabber.ShowAppProperties(app);
         }
 
         private void searchResults_AddToMenu(object sender, RoutedEventArgs e)

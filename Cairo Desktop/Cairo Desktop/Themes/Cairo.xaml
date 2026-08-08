@@ -1425,6 +1425,15 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <Style x:Key="SearchBoxBorderStyle"
+           TargetType="{x:Type Border}">
+        <Setter Property="Background"
+                Value="{DynamicResource ResourceKey=SearchResultBackground1}" />
+        <Setter Property="CornerRadius"
+                Value="10" />
+        <Setter Property="Padding"
+                Value="7,1,4,1" />
+    </Style>
     <Style x:Key="CairoSearchResultsItemStyle"
            TargetType="ListViewItem">
         <Setter Property="Height"

@@ -334,8 +334,8 @@ namespace CairoDesktop.Taskbar
         private void TaskbarWindow_Loaded(object sender, RoutedEventArgs e)
         {
             //Set the window style to noactivate.
-            NativeMethods.SetWindowLong(Handle, NativeMethods.GWL_EXSTYLE,
-                NativeMethods.GetWindowLong(Handle, NativeMethods.GWL_EXSTYLE) | (int)NativeMethods.ExtendedWindowStyles.WS_EX_NOACTIVATE);
+            NativeMethods.SetWindowLong(Handle, NativeMethods.WindowLongFlags.GWL_EXSTYLE,
+                NativeMethods.GetWindowLong(Handle, NativeMethods.WindowLongFlags.GWL_EXSTYLE) | (int)NativeMethods.ExtendedWindowStyles.WS_EX_NOACTIVATE);
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)

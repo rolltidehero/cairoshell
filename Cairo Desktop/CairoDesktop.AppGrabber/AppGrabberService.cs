@@ -125,7 +125,7 @@ namespace CairoDesktop.AppGrabber
                 QuickLaunch.AddRange(generateAppList(pinnedPath));
         }
 
-        private List<ApplicationInfo> GetApps()
+        public List<ApplicationInfo> GetApps()
         {
             List<List<ApplicationInfo>> listsToMerge = new List<List<ApplicationInfo>>();
             foreach (string location in searchLocations)
@@ -661,6 +661,7 @@ namespace CairoDesktop.AppGrabber
         Category QuickLaunch { get; }
         List<ApplicationInfo> ProgramList { get; }
         QuickLaunchManager QuickLaunchManager { get; set; }
+        List<ApplicationInfo> GetApps();
 
         void AddByPath(string[] fileNames, AppCategoryType categoryType);
         void AddByPath(string fileName, AppCategoryType categoryType);

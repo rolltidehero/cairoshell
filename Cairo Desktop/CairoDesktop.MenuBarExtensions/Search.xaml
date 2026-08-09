@@ -27,10 +27,8 @@
                                    FontFamily="{DynamicResource ResourceKey=GlobalFontFamily}"
                                    Margin="0,1,0,0"
                                    Text="{Binding Path=(l10n:DisplayString.sSearch_Title)}" />
-                        <Border Background="{DynamicResource ResourceKey=SearchResultBackground1}"
-                                CornerRadius="10"
-                                Margin="10,0,0,0"
-                                Padding="7,1,4,1">
+                        <Border Style="{StaticResource SearchBoxBorderStyle}"
+                                Margin="10,0,0,0">
                             <StackPanel Orientation="Horizontal">
                                 <TextBox Style="{StaticResource SearchTextBox}"
                                          Name="searchStr"

@@ -183,6 +183,7 @@ namespace CairoDesktop.Infrastructure.Services
             // use reflection to empty screens cache
             const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic;
             var fi = typeof(Screen).GetField("screens", flags) ?? typeof(Screen).GetField("s_screens", flags);
+            fi?.SetValue(null, null);
         }
 
         /// <summary>

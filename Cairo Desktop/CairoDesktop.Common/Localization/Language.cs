@@ -2232,6 +2232,9 @@ namespace CairoDesktop.Common.Localization
             { "sShutDown_ShutDown", "Herunterfahren" },
             { "sProgramsMenu_Empty", "Es wurden noch keine Apps ausgewählt. Öffnen Sie den App-Grabber um zu beginnen!" },
             { "sProgramsMenu_UninstallAProgram", "Ein Programm deinstallieren" },
+			{ "sProgramsMenu_SearchPlaceholder", "Programme suchen..." },
+			{ "sProgramsMenu_SearchNoResults", "Keine Programme gefunden." },
+			{ "sProgramsMenu_AddToMenu", "Zum Programme-Menü hinzufügen" },
             { "sProgramsMenu_RemoveFromMenu", "Von der Liste entfernen" },
             { "sProgramsMenu_RemoveTitle", "Diese App von der Liste entfernen?" },
             { "sProgramsMenu_RemoveInfo", "\"{0}\" wird aus der Liste {1} entfernt. Das Programm wird dadurch nicht deinstalliert." },
@@ -2332,6 +2335,7 @@ namespace CairoDesktop.Common.Localization
             { "sSettings_MenuBar_PinnedIcons", "Angeheftete Symbole:" },
             { "sSettings_MenuBar_NotificationAreaPinHelp", "Um ein Infobereichsymbol anzuheften, ziehen Sie es in den Bereich mit angehefteten Symbolen. Um ein Symbol zu lösen, ziehen Sie es in den Bereich für reduzierbare Symbole." },
             { "sSettings_MenuBar_EnableCairoMenuHotKey", "Hotkey für Cairo-Menü aktivieren:" },
+			{ "sSettings_MenuBar_EnableWinKey", "Programme-Menü mit der Windows-Taste öffnen" },
             { "sSettings_MenuBar_EnableMenuBarBlur", "Unschärfe hinter der Menüleiste" },
             { "sSettings_MenuBar_EnableMenuBarMultiMon", "Menüleiste auf mehreren Monitoren anzeigen" },
             { "sSettings_MenuBar_ShowHibernate", "Ruhezustand im Cairo-Menü anzeigen" },
@@ -2446,6 +2450,10 @@ namespace CairoDesktop.Common.Localization
             { "sCommand_CloseDesktopOverlay", "Desktop-Overlay schließen" },
             { "sCommand_AddToPrograms", "Zum Programmmenü hinzufügen" },
             { "sCommand_AddToQuickLaunch", "Zum Schnellstart hinzufügen" }
+			{ "sCommand_ToggleCairoMenu", "Cairo-Menü ein-/ausschalten" },
+			{ "sCommand_ToggleProgramsMenu", "Programme-Menü ein-/ausschalten" },
+			{ "sCommand_ToggleCalendar", "Kalender ein-/ausschalten" },
+			{ "sCommand_ToggleSearch", "Suche ein-/ausschalten" },
         };
 
         public static Dictionary<string, string> es_ES = new Dictionary<string, string>

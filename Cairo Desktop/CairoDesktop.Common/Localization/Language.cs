@@ -314,7 +314,7 @@ namespace CairoDesktop.Common.Localization
             { "sCommand_ToggleCairoMenu", "Toggle Cairo Menu" },
             { "sCommand_ToggleProgramsMenu", "Toggle Programs Menu" },
             { "sCommand_ToggleCalendar", "Toggle Calendar" },
-            { "sCommand_ToggleSearch", "Toggle Search" },
+            { "sCommand_ToggleSearch", "Toggle Search" }
         };
 
         public static Dictionary<string, string> pt_BR = new Dictionary<string, string>
@@ -1617,7 +1617,7 @@ namespace CairoDesktop.Common.Localization
             { "sCommand_OpenFile", "打开文件" },
             { "sCommand_OpenLocation", "打开位置" },
             { "sCommand_OpenDesktopOverlay", "打开桌面叠层" },
-            { "sCommand_CloseDesktopOverlay", "关闭桌面叠层" },
+            { "sCommand_CloseDesktopOverlay", "关闭桌面叠层" }
         };
 
         public static Dictionary<string, string> zh_TW = new Dictionary<string, string>
@@ -1920,7 +1920,7 @@ namespace CairoDesktop.Common.Localization
             { "sCommand_OpenFile", "開啟檔案" },
             { "sCommand_OpenLocation", "開啟位置" },
             { "sCommand_OpenDesktopOverlay", "開啟桌面覆蓋介面" },
-            { "sCommand_CloseDesktopOverlay", "關閉桌面覆蓋介面" },
+            { "sCommand_CloseDesktopOverlay", "關閉桌面覆蓋介面" }
         };
 
         public static Dictionary<string, string> cs_CZ = new Dictionary<string, string>
@@ -2453,7 +2453,7 @@ namespace CairoDesktop.Common.Localization
 			{ "sCommand_ToggleCairoMenu", "Cairo-Menü ein-/ausschalten" },
 			{ "sCommand_ToggleProgramsMenu", "Programme-Menü ein-/ausschalten" },
 			{ "sCommand_ToggleCalendar", "Kalender ein-/ausschalten" },
-			{ "sCommand_ToggleSearch", "Suche ein-/ausschalten" },
+			{ "sCommand_ToggleSearch", "Suche ein-/ausschalten" }
         };
 
         public static Dictionary<string, string> es_ES = new Dictionary<string, string>
@@ -4707,7 +4707,7 @@ namespace CairoDesktop.Common.Localization
             { "sCommand_OpenDesktopOverlay", "Odpri prekrivno okno za namizje" },
             { "sCommand_CloseDesktopOverlay", "Zapri prekrivno okno za namizje" },
             { "sCommand_AddToPrograms", "Dodaj v meni programov" },
-            { "sCommand_AddToQuickLaunch", "Dodaj v hitri zagon" },
+            { "sCommand_AddToQuickLaunch", "Dodaj v hitri zagon" }
         };
 
         public static Dictionary<string, string> nb_NO = new Dictionary<string, string>
@@ -5013,7 +5013,7 @@ namespace CairoDesktop.Common.Localization
             { "sCommand_OpenDesktopOverlay", "Åpne skrivebordsoverlegg" },
             { "sCommand_CloseDesktopOverlay", "Lukk skrivebordsoverlegg" },
             { "sCommand_AddToPrograms", "Legg til i Programmer-meny" },
-            { "sCommand_AddToQuickLaunch", "Legg til i Hurtigstart" },
+            { "sCommand_AddToQuickLaunch", "Legg til i Hurtigstart" }
         };
 
         public static Dictionary<string, string> ja_JP = new Dictionary<string, string>
@@ -5323,7 +5323,7 @@ namespace CairoDesktop.Common.Localization
             { "sCommand_ToggleCairoMenu", "Cairo メニューの切り替え" },
             { "sCommand_ToggleProgramsMenu", "プログラムメニューの切り替え" },
             { "sCommand_ToggleCalendar", "カレンダーの切り替え" },
-            { "sCommand_ToggleSearch", "検索の切り替え" },
+            { "sCommand_ToggleSearch", "検索の切り替え" }
         };
 
 
